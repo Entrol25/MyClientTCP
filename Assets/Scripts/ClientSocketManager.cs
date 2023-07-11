@@ -115,12 +115,12 @@ public class ClientSocketManager : MonoBehaviour
     { 
         if (status == "1:1")
         { 
-            buttonBattle.SetActive(true);
+            //buttonBattle.SetActive(true);
         }
         else
         {
             // в ButtonBattleHelper(bool _active)// class ButtonBattle
-            buttonBattle.SetActive(false);
+            //buttonBattle.SetActive(false);
         }
         if (status == "2:2")
         {
@@ -147,7 +147,7 @@ public class ClientSocketManager : MonoBehaviour
         }//                                               ==
         if (_tcp_Message[0] == '*' && _tcp_Message[4] == '`')// начало конец сообщения
         {
-            // подключились к int ServerStart::StartServer() / 0:0 
+            // подключились к int ServerStart::StartServer() / 0:0  
             if (_tcp_Message[1] == '0' && _tcp_Message[3] == '0')
             {
                 status = "0:0";
@@ -193,14 +193,16 @@ public class ClientSocketManager : MonoBehaviour
     {
         //Debug.Log("Start Coroutine");
         yield return new WaitForSeconds(30);
-        Debug.Log("Stop Coroutine");
+        //Debug.Log("Stop Coroutine");
+
         ClientSocket.SendMessage("1:2");// запрос в Room Online Game
 
-        if(inBattle == false) 
+        if (inBattle == false)
+
         {// рекурсия
             StartCoroutine(InBattle());// StartCoroutine 
         }
-        
+
     }
     //static public void Room(string _vector3)// Button_R
     //{//             status

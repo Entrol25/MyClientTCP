@@ -54,7 +54,7 @@ public class ClientSocket : MonoBehaviour
         {
             byte[] buffer = new byte[1024];// создать буфер байтов - массив 
             buffer = Encoding.UTF8.GetBytes(_m);// получаем байт код 
-            Debug.Log("SendMessage() = " +_m);
+            //Debug.Log("SendMessage() = " +_m);
             Client.Send(buffer);// отправляем на сервер
         }
     }
@@ -89,7 +89,7 @@ public class ClientSocket : MonoBehaviour
                 {
                     buffer[i] = 0;// чистим буфер
                 }
-                Debug.Log("RecvMessage() = " + Clear_Message);
+                //Debug.Log("RecvMessage() = " + Clear_Message);
                 clientSocketManager.SetMessageStatus(Clear_Message);// Status
             }
             catch (Exception ex)// если из try ничего не сработало 

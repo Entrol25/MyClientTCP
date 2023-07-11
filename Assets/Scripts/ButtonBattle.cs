@@ -8,9 +8,9 @@ public class ButtonBattle : MonoBehaviour
 
     private void OnMouseDown()
     {   // запрос в Room Online Game
-        ClientSocket.SendMessage("1:2");
+        //ClientSocket.SendMessage("1:2");
         // перенёс в clientSocketManager.ButtonBattleHelper(false);
         
-        //clientSocketManager.ButtonBattleHelper(false);
+        clientSocketManager.ButtonBattleHelper(false);
     }
 }
