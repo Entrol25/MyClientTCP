@@ -115,12 +115,12 @@ public class ClientSocketManager : MonoBehaviour
     { 
         if (status == "1:1")
         { 
-            //buttonBattle.SetActive(true);
+            buttonBattle.SetActive(true);
         }
         else
         {
             // в ButtonBattleHelper(bool _active)// class ButtonBattle
-            // buttonBattle.SetActive(false);
+            buttonBattle.SetActive(false);
         }
         if (status == "2:2")
         {
@@ -192,7 +192,7 @@ public class ClientSocketManager : MonoBehaviour
     IEnumerator InBattle()// Coroutine 
     {
         //Debug.Log("Start Coroutine");
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(30);
         Debug.Log("Stop Coroutine");
         ClientSocket.SendMessage("1:2");// запрос в Room Online Game
 
