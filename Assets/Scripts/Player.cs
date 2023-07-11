@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {

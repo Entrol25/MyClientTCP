@@ -1,11 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿//using System.Collections;
+//using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonBattle : MonoBehaviour
 {
+    [SerializeField] ClientSocketManager clientSocketManager;
+
     private void OnMouseDown()
-    {
-        ClientSocket.SendMessage("1:2");// запрос в Room Online Game
+    {   // запрос в Room Online Game
+        //ClientSocket.SendMessage("1:2");
+        // перенёс в clientSocketManager.ButtonBattleHelper(false);
+        clientSocketManager.ButtonBattleHelper(false);
     }
 }

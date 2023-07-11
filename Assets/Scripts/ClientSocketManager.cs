@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //
 using TMPro;//
-using UnityEditor.EditorTools;
+//using UnityEditor.EditorTools;
 using System;
 
 public class ClientSocketManager : MonoBehaviour
@@ -38,7 +38,7 @@ public class ClientSocketManager : MonoBehaviour
 
     void Start()
     {
-        buttonBattle.SetActive(false);
+        buttonBattle.SetActive(true);
         buttonGoOut.SetActive(false);
         fpsMeshPro.text = "";
     } 
@@ -115,11 +115,12 @@ public class ClientSocketManager : MonoBehaviour
     { 
         if (status == "1:1")
         { 
-            buttonBattle.SetActive(true);
+            //buttonBattle.SetActive(true);
         }
         else
-        { 
-            buttonBattle.SetActive(false); 
+        {
+            // в ButtonBattleHelper(bool _active)// class ButtonBattle
+            // buttonBattle.SetActive(false);
         }
         if (status == "2:2")
         {
@@ -166,6 +167,7 @@ public class ClientSocketManager : MonoBehaviour
             if (_tcp_Message[1] == '2' && _tcp_Message[3] == '2')// Room Online Game, длобит сюда !!!!!!!!
             {
                 status = "2:2";
+                inBattle = true;// Stop Coroutine. ожидание игроков закончено
                 Debug.Log("Room Online Game --------");// длобит сюда !!!!!!!!!!!!!!!!!!!!!!!!!
                 ClientSocket.SendMessage("2:2");// подтверждение в Room Online Game
             }
@@ -175,6 +177,30 @@ public class ClientSocketManager : MonoBehaviour
     {
         button = _button; buttonState = _buttonState;
         //Debug.Log("public void SetMove()");
+    }
+    bool inBattle = false;
+    public void ButtonBattleHelper(bool _active)// class ButtonBattle
+    {
+        if(_active == false)
+        {
+            // запрос в Room Online Game
+            ClientSocket.SendMessage("1:2");
+            buttonBattle.SetActive(false);
+            StartCoroutine(InBattle());// StartCoroutine 
+        }
+    }
+    IEnumerator InBattle()// Coroutine 
+    {
+        //Debug.Log("Start Coroutine");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Stop Coroutine");
+        ClientSocket.SendMessage("1:2");// запрос в Room Online Game
+
+        if(inBattle == false) 
+        {// рекурсия
+            StartCoroutine(InBattle());// StartCoroutine 
+        }
+        
     }
     //static public void Room(string _vector3)// Button_R
     //{//             status
