@@ -184,21 +184,17 @@ public class ClientSocketManager : MonoBehaviour
         if(_active == false)
         {
             // запрос в Room Online Game
-            ClientSocket.SendMessage("1:2");
+            //ClientSocket.SendMessage("1:2");
             buttonBattle.SetActive(false);
             StartCoroutine(InBattle());// StartCoroutine 
         }
     }
     IEnumerator InBattle()// Coroutine 
     {
-        //Debug.Log("Start Coroutine");
-        yield return new WaitForSeconds(30);
-        //Debug.Log("Stop Coroutine");
-
         ClientSocket.SendMessage("1:2");// запрос в Room Online Game
-
+        yield return new WaitForSeconds(10);
+        //ClientSocket.SendMessage("1:2");// запрос в Room Online Game
         if (inBattle == false)
-
         {// рекурсия
             StartCoroutine(InBattle());// StartCoroutine 
         }
