@@ -9,15 +9,20 @@ using System;
 public class ClientSocketManager : MonoBehaviour
 {
 	[SerializeField] RoomManager roomManager;
+	[SerializeField] ClientSocket clientSocket;
 	[SerializeField] Player player;
 	[SerializeField] Data data;
 
 	[SerializeField] private TextMeshProUGUI netMeshPro;
 	[SerializeField] private TextMeshProUGUI tcpMeshPro;
 	[SerializeField] private TextMeshProUGUI fpsMeshPro;
+	[SerializeField] private TextMeshProUGUI debugMeshPro;
 
 	[SerializeField] private GameObject buttonBattle;
 	[SerializeField] private GameObject buttonGoOut;
+	[SerializeField] private GameObject buttonClose;
+	[SerializeField] private GameObject buttonR;
+	[SerializeField] private GameObject buttonL;
 
 	//static private char[] status = {'-','-'};// 0 connect, 1 connect, 2 room onliyne game
 	static private string status = "-:-";// 0 connect, 1 connect, 2 room onliyne game
@@ -28,6 +33,7 @@ public class ClientSocketManager : MonoBehaviour
 	private bool getMessage = false;
 	string message = "";
 	string tcp_Message = "";
+	string debug_Message = "";
 
 	bool freeze = false;
 	[SerializeField] private int countMess = 4;//0 - 25 раз/c. 3 - 12 раз/c. 4 - 10 раз/c. 8 - 5 раз/c
@@ -38,8 +44,12 @@ public class ClientSocketManager : MonoBehaviour
 
 	void Start()
 	{
-		buttonBattle.SetActive(true);
+		buttonBattle.SetActive(false);
 		buttonGoOut.SetActive(false);
+		buttonClose.SetActive(false);
+		buttonR.SetActive(false);
+		buttonL.SetActive(false);
+		//
 		fpsMeshPro.text = "";
 	}
 	private void FixedUpdate()
@@ -47,6 +57,7 @@ public class ClientSocketManager : MonoBehaviour
 		Satus();
 		netMeshPro.text = status;//
 		tcpMeshPro.text = TcpMessage(tcp_Message);// убираем лишние знаки для tcpMeshPro
+		debugMeshPro.text = debug_Message;
 		Move();// ----------------------------
 	}
 	private string TcpMessage(string _tcp_Message)// убираем лишние знаки для tcpMeshPro
@@ -97,11 +108,11 @@ public class ClientSocketManager : MonoBehaviour
 				if (button == "R")
 				{
 					vector = player.GetVectorRun(button);// !!!!!!!!!!!!!!!!!!!!!
-																							 //Debug.Log("Move() / " + vector);
-																							 //         2:2      /    id    /    кнопка    /    vector
+					//Debug.Log("Move() / " + vector);
+					//         2:2      /    id    /    кнопка    /    vector
 					message = status + "/" + id + "/" + button + "/" + vector;
 					//Debug.Log("Move() " + message);
-					ClientSocket.SendMessage(message);// !!!!!!!!!!!!!!!!!!!!!
+					clientSocket.SendMessage(message);// !!!!!!!!!!!!!!!!!!!!!
 
 					countSendMessage++;
 					freeze = true;
@@ -115,20 +126,27 @@ public class ClientSocketManager : MonoBehaviour
 	{
 		if (status == "1:1")
 		{
-			//buttonBattle.SetActive(true);
-		}
-		else
-		{
-			// в ButtonBattleHelper(bool _active)// class ButtonBattle
-			//buttonBattle.SetActive(false);
-		}
-		if (status == "2:2")
-		{
-			buttonGoOut.SetActive(true);
-		}
-		else
-		{
+			buttonBattle.SetActive(true);// <<<<<<
 			buttonGoOut.SetActive(false);
+			buttonClose.SetActive(true);// <<<<<<
+			buttonR.SetActive(false);
+			buttonL.SetActive(false);
+		}
+		else if (status == "2:2")
+		{
+			buttonBattle.SetActive(false);
+			buttonGoOut.SetActive(true);// <<<<<<
+			buttonClose.SetActive(false);
+			buttonR.SetActive(true);// <<<<<<
+			buttonL.SetActive(true);// <<<<<<
+		}
+		else
+		{
+			buttonBattle.SetActive(false);
+			buttonGoOut.SetActive(false);
+			buttonClose.SetActive(false);
+			buttonR.SetActive(false);
+			buttonL.SetActive(false);
 		}
 	}
 	//***********************************************************************************
@@ -149,7 +167,8 @@ public class ClientSocketManager : MonoBehaviour
 				Debug.Log("SetExit()------------------------------------");
 				if (_tcp_Message[4] == 'x')// выход. Unity
 				{
-					ClientSocket.SetExit();// выход. Unity
+					status = "0:0";
+					clientSocket.SetExit();// выход. Unity
 				}
 			}
 		}//                                           ==
@@ -161,7 +180,7 @@ public class ClientSocketManager : MonoBehaviour
 				status = "0:0";
 				Debug.Log("Loading --------");
 				string _login = data.GetLogin();
-				ClientSocket.SendMessage("0:1" + _login);// запрос в Accaunt
+				clientSocket.SendMessage("0:1" + _login);// запрос в Accaunt
 			}    // подключились к void Client::SendMessageToClient
 			else // (int ID, SOCKET* Connections) / 1:1 
 			if (_tcp_Message[1] == '1' && _tcp_Message[3] == '1')
@@ -177,7 +196,7 @@ public class ClientSocketManager : MonoBehaviour
 				status = "2:2";
 				inBattle = true;// Stop Coroutine. ожидание игроков закончено
 				Debug.Log("Room Online Game --------");// длобит сюда !!!!!!!!!!!!!!!!!!!!!!!!!
-				ClientSocket.SendMessage("2:2");// подтверждение в Room Online Game
+				clientSocket.SendMessage("2:2");// подтверждение в Room Online Game
 			}
 		}
 	}
@@ -199,7 +218,7 @@ public class ClientSocketManager : MonoBehaviour
 	}
 	IEnumerator InBattle()// Coroutine 
 	{
-		ClientSocket.SendMessage("1:2");// запрос в Room Online Game
+		clientSocket.SendMessage("1:2");// запрос в Room Online Game
 		yield return new WaitForSeconds(10);
 		//ClientSocket.SendMessage("1:2");// запрос в Room Online Game
 		if (inBattle == false)
@@ -218,4 +237,9 @@ public class ClientSocketManager : MonoBehaviour
 	//{
 	//    Room(_vector3);
 	//}
+
+	public void DebugLog(string _debug)// ClientSocket
+	{
+		debug_Message = _debug;
+	}
 }

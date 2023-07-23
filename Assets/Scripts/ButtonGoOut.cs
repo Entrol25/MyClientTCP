@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ButtonGoOut : MonoBehaviour
 {
-    private void OnMouseDown()
-    {
-        ClientSocket.SendMessage("2:1");// запрос на выход в Accaunt
-    }
+	[SerializeField] ClientSocket clientSocket;
+
+	private void OnMouseDown()
+	{
+		clientSocket.SendMessage("2:1");// запрос на выход в Accaunt
+	}
 }

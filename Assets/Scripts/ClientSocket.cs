@@ -21,41 +21,45 @@ public class ClientSocket : MonoBehaviour
 	static private Socket Client;// сокет для клиента 
 	private IPAddress ip = IPAddress.Parse("127.0.0.1");// тут храним IP 
 	private int port = 7890;// изначально порт = 0
-	static private Thread th;// создать поток
-
-
+	static private Thread thread;// создать поток
 
 	void Start()// Вход - кнопка 
 	{
+
 		Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);// создать сокет 
 		if (ip != null)// если IP найден 
 		{
 			try// обработчик ошибок 
 			{
 				Client.Connect(ip, port);// подкл. к серверу 
-				th = new Thread(delegate ()
+
+				thread = new Thread(/*delegate ()*/ () =>
 				{
 					RecvMessage();
 				});// создать поток 
-				th.Start();// запуск потока 
+				thread.Start();// запуск потока 
 			}
 			catch (Exception ex)// если из try ничего не сработало 
 			{
-				//Debug.Log("void Start() = catch (Exception ex)");
-				//Debug.Log(ex);
+				Debug.Log("void Start() = catch (Exception ex)");
+				Debug.Log(ex);
 			}
 		}
 	}
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	public static new void SendMessage(string _message)// ф-я с параметром string. отправляет сообщения на сервер 
+	// public static new void SendMessage(string _message)
+	public new void SendMessage(string _message)// ф-я с параметром string. отправляет сообщения на сервер 
 	{
 		string _m = "*" + _message + "`";
-		if (_m != " " && _m != "")// есть сообщение 
+		if (thread != null && Client != null)// есть поток && работает. Socket Client;
 		{
-			byte[] buffer = new byte[1024];// создать буфер байтов - массив 
-			buffer = Encoding.UTF8.GetBytes(_m);// получаем байт код 
-			Debug.Log("SendMessage() = " + _m);
-			Client.Send(buffer);// отправляем на сервер
+			if (_m != " " && _m != "")// есть сообщение 
+			{
+				byte[] buffer = new byte[1024];// создать буфер байтов - массив 
+				buffer = Encoding.UTF8.GetBytes(_m);// получаем байт код 
+				Debug.Log("SendMessage() = " + _m);
+				Client.Send(buffer);// отправляем на сервер
+			}
 		}
 	}
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -94,23 +98,45 @@ public class ClientSocket : MonoBehaviour
 			}
 			catch (Exception ex)// если из try ничего не сработало 
 			{
-				Debug.Log("private void RecvMessage()");
-				Debug.Log(ex);
+				//Debug.Log("private void RecvMessage()");
+				//Debug.Log(ex);
+
+				Debug.Log("--------- thread.Join() && thread.Abort() ---------");
+				thread.Join();// дождаться окончания потока <<<<<<<<<<<<<<<<<<<<
+				thread.Abort();// остановить поток <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			}
 		}
 	}
 	//***********************************************************
-	public static void SetExit()// Выход. class ClientSocketManager
+	public void SetExit()// Выход. class ClientSocketManager
 	{
-		Debug.Log("SetExit()******************************");
-		if (th != null)// если есть поток 
-		{
-			th.Abort();// остановить поток 
-		}
+		//Debug.Log("SetExit()******************************");
 		if (Client != null)//  если работает. Socket Client;
 		{
+			//Debug.Log("= 1.0 =");
 			Client.Close();// закрыть. Socket Client;
+			//Debug.Log("= 1.1 =");
+		}
+		if (thread != null)// если есть поток 
+		{// https://professorweb.ru/my/csharp/thread_and_files/1/1_14.php 
+			//Debug.Log("= 2.0 =");
+			clientSocketManager.DebugLog("= 2.0 =");
+			/* завершаем поток в ошибке после закрытия игры.
+			   RecvMessage() catch (Exception ex) {}. 
+				 Иначе поток не закрывает. */
 		}
 		Application.Quit();// выход. Unity
+	}
+	public void Button_Exit()//
+	{
+		if (thread != null && Client != null)// есть поток && работает. Socket Client;
+		{
+			//Debug.Log("Button_Exit()===================");
+			SendMessage("1:0x");// выход. Unity
+		}
+		else
+		{
+			SetExit(); 
+		}
 	}
 }

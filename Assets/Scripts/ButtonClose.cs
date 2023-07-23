@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class ButtonClose : MonoBehaviour
 {
+	[SerializeField] ClientSocket clientSocket;
+
 	private void OnMouseDown()
 	{
-		ClientSocket.SendMessage("1:0x");// выход. Unity
+		//Debug.Log("class ButtonClose");
+		//ClientSocket.SendMessage("1:0x");// выход. Unity
+		// SendMessage("1:0x");// выход. Unity
+		clientSocket.Button_Exit();
 	}
 	//public void SetMyMouseDown()
 	//{ 
