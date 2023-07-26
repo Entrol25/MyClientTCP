@@ -6,7 +6,7 @@ public class ButtonGoOut : MonoBehaviour
 {
 	[SerializeField] ClientSocket clientSocket;
 
-	private void OnMouseDown()
+	private void OnMouseDown() 
 	{
 		clientSocket.SendMessage("2:1");// запрос на выход в Accaunt
 	}

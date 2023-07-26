@@ -36,7 +36,7 @@ public class RoomManager : MonoBehaviour
 	//------------- FPS --------------------------
 	//****************************************
 	// ф-я принимает сообщения от ClientSocketManager
-	public void TCPMessage(string _tcp_Message)
+	public void TCPMessage(string _tcp_Message) 
 	{
 		tcp_Message = _tcp_Message;
 		int _slash = 0;

@@ -6,7 +6,7 @@ public class ButtonClose : MonoBehaviour
 {
 	[SerializeField] ClientSocket clientSocket;
 
-	private void OnMouseDown()
+	private void OnMouseDown() 
 	{
 		//Debug.Log("class ButtonClose");
 		//ClientSocket.SendMessage("1:0x");// выход. Unity

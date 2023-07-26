@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
 			vector3 = transform.position;
 			vector3.x += speed;
 			transform.position = vector3;
-		}
+		} 
 	}
 	string VectorRun(string _buttonVector)
 	{

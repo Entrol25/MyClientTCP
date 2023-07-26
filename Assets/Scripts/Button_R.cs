@@ -12,7 +12,7 @@ public class Button_R : MonoBehaviour
 
 	private void OnMouseDown()
 	{
-		clientSocketManager.SetMove("R", true);
+		clientSocketManager.SetMove("R", true); 
 	}
 	private void OnMouseUp()
 	{//Debug.Log("-------");

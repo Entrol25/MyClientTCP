@@ -18,14 +18,15 @@ public class ClientSocket : MonoBehaviour
 {
 	[SerializeField] ClientSocketManager clientSocketManager;
 
-	static private Socket Client;// сокет для клиента 
+	private Socket Client;// сокет для клиента 
 	private IPAddress ip = IPAddress.Parse("127.0.0.1");// тут храним IP 
 	private int port = 7890;// изначально порт = 0
-	static private Thread thread;// создать поток
+	private Thread thread;// создать поток
+
+	private bool forClose = false; 
 
 	void Start()// Вход - кнопка 
 	{
-
 		Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);// создать сокет 
 		if (ip != null)// если IP найден 
 		{
@@ -41,7 +42,7 @@ public class ClientSocket : MonoBehaviour
 			}
 			catch (Exception ex)// если из try ничего не сработало 
 			{
-				Debug.Log("void Start() = catch (Exception ex)");
+				Debug.Log("void Start() = catch (Exception ex) ---------------");
 				Debug.Log(ex);
 			}
 		}
@@ -75,13 +76,19 @@ public class ClientSocket : MonoBehaviour
 		{
 			try// обработчик ошибок 
 			{
+				if (forClose == true)
+				{
+					//Debug.Log("5");
+					break;
+				}
+
 				Client.Receive(buffer);// приём сообщения 
 				string message = Encoding.UTF8.GetString(buffer);// переводим байты в стринг 
 				int count = message.IndexOf("\0");// не '`', будет ошибка. ищет ;;;5 - конец сообщения 
 				if (count == -1)// ищет ;;;5 - конец сообщения
 				{
 					continue;// продолжаем цикл  
-				}
+				} 
 
 				string Clear_Message = "";// очищаем сообщение для работы 
 
@@ -98,13 +105,15 @@ public class ClientSocket : MonoBehaviour
 			}
 			catch (Exception ex)// если из try ничего не сработало 
 			{
-				//Debug.Log("private void RecvMessage()");
-				//Debug.Log(ex);
-
-				Debug.Log("--------- thread.Join() && thread.Abort() ---------");
-				thread.Join();// дождаться окончания потока <<<<<<<<<<<<<<<<<<<<
-				thread.Abort();// остановить поток <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+				Debug.Log("private void RecvMessage() --------------------------");
+				Debug.Log(ex);
 			}
+		}
+		if (forClose == true)
+		{
+			//Debug.Log("6");
+			//thread.Abort();// остановить поток <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			//Debug.Log("7");
 		}
 	}
 	//***********************************************************
@@ -113,19 +122,21 @@ public class ClientSocket : MonoBehaviour
 		//Debug.Log("SetExit()******************************");
 		if (Client != null)//  если работает. Socket Client;
 		{
-			//Debug.Log("= 1.0 =");
 			Client.Close();// закрыть. Socket Client;
-			//Debug.Log("= 1.1 =");
+			//Debug.Log("1");
 		}
 		if (thread != null)// если есть поток 
-		{// https://professorweb.ru/my/csharp/thread_and_files/1/1_14.php 
-			//Debug.Log("= 2.0 =");
-			clientSocketManager.DebugLog("= 2.0 =");
+		{
+			clientSocketManager.DebugLog("= 2 =");
 			/* завершаем поток в ошибке после закрытия игры.
 			   RecvMessage() catch (Exception ex) {}. 
 				 Иначе поток не закрывает. */
+			forClose = true;
+			//Debug.Log("2");
 		}
-		Application.Quit();// выход. Unity
+		//Debug.Log("3");
+		Application.Quit();// выход. Unity 
+		//Debug.Log("4");
 	}
 	public void Button_Exit()//
 	{

@@ -11,6 +11,6 @@ public class ButtonBattle : MonoBehaviour
 			//ClientSocket.SendMessage("1:2");
 			// перенёс в clientSocketManager.ButtonBattleHelper(false);
 
-		clientSocketManager.ButtonBattleHelper(false);
+		clientSocketManager.ButtonBattleHelper(false); 
 	}
 }

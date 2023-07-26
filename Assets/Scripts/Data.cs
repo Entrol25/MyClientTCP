@@ -73,7 +73,7 @@ public class Data : MonoBehaviour
 		string _login = "/" + mail;
 
 		local = DateTime.Now.ToString();
-		UTC = DateTime.UtcNow.ToString();
+		UTC = DateTime.UtcNow.ToString(); 
 
 		local = CleanData(local);// приводит дату и время в порядок
 		UTC = CleanData(UTC);// приводит дату и время в порядок

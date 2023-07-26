@@ -16,7 +16,7 @@ public class ClientSocketManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI netMeshPro;
 	[SerializeField] private TextMeshProUGUI tcpMeshPro;
 	[SerializeField] private TextMeshProUGUI fpsMeshPro;
-	[SerializeField] private TextMeshProUGUI debugMeshPro;
+	[SerializeField] private TextMeshProUGUI debugMeshPro; 
 
 	[SerializeField] private GameObject buttonBattle;
 	[SerializeField] private GameObject buttonGoOut;
